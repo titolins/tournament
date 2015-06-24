@@ -11,7 +11,7 @@
 This is the readme for the Tournament Project, second project required for 
 obtaining the [Fullstack Web Developer Nanodegree](
 http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004)
-from udacity:         
+from udacity:
 
 
  > Description
@@ -53,7 +53,6 @@ from udacity:
     * After installing and configuring postgresql, you will need to connect to
       it and import the schema from the .sql file, as follows:
 
-            `
             $ psql
             => create database tournament;
             => \c tournament
@@ -62,7 +61,6 @@ from udacity:
             CREATE TABLE
             CREATE VIEW
             CREATE VIEW
-            `
     
     * The standings view created above may be used to get the player standings.
 
@@ -73,7 +71,6 @@ from udacity:
    functionalities from a python interpreter. e.g. using the command line to
    start playing a new tournament:
             
-            `
             $ python
             >>> from tournament import *
             >>> registerPlayer("Markov Chaney") 
@@ -108,13 +105,10 @@ from udacity:
             >>> deleteMatches()
 
             # And start over...
-            `
 
  - To run the test suite, simply execute the following from a terminal emulator:
 
-            `
             $ python tournament_test.py
-            `
 
 
  > Author

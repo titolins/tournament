@@ -8,10 +8,10 @@
 ################################################################################
 ################################################################################
 
-#### This is the readme for the Tournament Project, second project required for
-obtaining the full stack web developer nano degree from udacity:         
-
-##### http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004 
+This is the readme for the Tournament Project, second project required for 
+obtaining the [Fullstack Web Developer Nanodegree](
+http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004)
+from udacity:
 
 
  > Description
@@ -60,7 +60,6 @@ obtaining the full stack web developer nano degree from udacity:
     * After installing and configuring postgresql, you will need to connect to
       it and import the schema from the .sql file, as follows:
 
-            `
             $ psql
             => create database tournament;
             => \c tournament
@@ -69,7 +68,6 @@ obtaining the full stack web developer nano degree from udacity:
             CREATE TABLE
             CREATE TABLE
             CREATE VIEW
-            `
 
     * The standings view created above may be used to get the player standings.
             
@@ -77,7 +75,6 @@ obtaining the full stack web developer nano degree from udacity:
    functionalities from a python interpreter. e.g. using the command line start
    playing a new tournament:
             
-            `
             $ python
             >>> from tournament_extras import *
 
@@ -132,16 +129,13 @@ obtaining the full stack web developer nano degree from udacity:
             >>> startNewTournament()
 
             # And start over...
-            `
 
      - There is a really simple test suit i used mainly to test the odd number
        of players. It starts a tournament and reports all matches until we have
        a winner. To run it, simply execute the following from a terminal 
        emulator:
 
-            `
             $ python test_extras.py
-            `
 
  > Author
 --------------------------------------------------------------------------------
