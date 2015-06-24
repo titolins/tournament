@@ -7,12 +7,11 @@
 #                                                                              #
 ################################################################################
 ################################################################################
-###                                                                          ###
-### This is the readme for the Tournament Project, second project required for
-### obtaining the full stack web developer nano degree from udacity:         ###
-### http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004 ###
-###                                                                          ###
-################################################################################
+
+#### This is the readme for the Tournament Project, second project required for
+     obtaining the full stack web developer nano degree from udacity:         
+
+##### http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004 
 
 
  > Description
@@ -35,25 +34,26 @@
 
 
  > Requirements
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
  - Python
-    -> https://www.python.org/downloads/
+    * https://www.python.org/downloads/
  
  - psycopg -- python module for connecting with postgresql databases
-    -> http://initd.org/psycopg/
+    * http://initd.org/psycopg/
     
  - PostgreSQL
-    -> http://www.postgresql.org/
+    * http://www.postgresql.org/
 
 
  > Instructions
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
  - First of all, prepare your database:
-    -> After installing and configuring postgresql, you will need to connect to
-       it and import the schema from the .sql file, as follows:
+    * After installing and configuring postgresql, you will need to connect to
+      it and import the schema from the .sql file, as follows:
 
+            `
             $ psql
             => create database tournament;
             => \c tournament
@@ -62,16 +62,18 @@
             CREATE TABLE
             CREATE VIEW
             CREATE VIEW
+            `
     
-    -> The standings view created above may be used to get the player standings.
+    * The standings view created above may be used to get the player standings.
 
-    -> Also, the pairings view already selects the players that are to play each
-       other in the next round in accordance with the order in the standings.
+    * Also, the pairings view already selects the players that are to play each
+      other in the next round in accordance with the order in the standings.
             
  - Now that your database is prepared, you may use any of the app 
    functionalities from a python interpreter. e.g. using the command line to
    start playing a new tournament:
             
+            `
             $ python
             >>> from tournament import *
             >>> registerPlayer("Markov Chaney") 
@@ -106,17 +108,20 @@
             >>> deleteMatches()
 
             # And start over...
+            `
 
  - To run the test suite, simply execute the following from a terminal emulator:
 
+            `
             $ python tournament_test.py
+            `
 
 
  > Author
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
  - Tito Lins
-   -> Contact: <titolins@outlook.com> or <tito@blinx.com.br>
-   -> Github: https://github.com/titolins
+   * Contact: <titolins@outlook.com> or <tito@blinx.com.br>
+   * Github: https://github.com/titolins
 
 ################################################################################
 ################################################################################

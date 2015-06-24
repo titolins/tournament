@@ -1,20 +1,17 @@
 ################################################################################
 ################################################################################
-##################                                           ###################
-################## Udacity FullStack WebDeveloper Nanodegree ###################
-##################                                           ###################
-##################                                           ###################
-##################           Tournament Project              ###################
-##################                                           ###################
-################################################################################
-################################################################################
 #                                                                              #
-# This is the readme for the Tournament Project, second project required for   #
-# obtaining the full stack web developer nano degree from udacity:             #
+#                  Udacity FullStack WebDeveloper Nanodegree                   #
 #                                                                              #
-#    http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004  #
+#                            Tournament Project                                #
 #                                                                              #
 ################################################################################
+################################################################################
+
+#### This is the readme for the Tournament Project, second project required for
+     obtaining the full stack web developer nano degree from udacity:         
+
+##### http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004 
 
 
  > Description
@@ -44,25 +41,26 @@
 
 
  > Requirements
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
  - Python
-    -> https://www.python.org/downloads/
+    * https://www.python.org/downloads/
  
  - psycopg -- python module for connecting with postgresql databases
-    -> http://initd.org/psycopg/
+    * http://initd.org/psycopg/
     
  - PostgreSQL
-    -> http://www.postgresql.org/
+    * http://www.postgresql.org/
 
 
  > Instructions
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
  - First of all, prepare your database:
-    -> After installing and configuring postgresql, you will need to connect to
-       it and import the schema from the .sql file, as follows:
+    * After installing and configuring postgresql, you will need to connect to
+      it and import the schema from the .sql file, as follows:
 
+            `
             $ psql
             => create database tournament;
             => \c tournament
@@ -71,17 +69,19 @@
             CREATE TABLE
             CREATE TABLE
             CREATE VIEW
+            `
 
-    -> The standings view created above may be used to get the player standings.
+    * The standings view created above may be used to get the player standings.
             
  - Now that your database is prepared, you may use any of the app 
    functionalities from a python interpreter. e.g. using the command line start
    playing a new tournament:
             
+            `
             $ python
             >>> from tournament_extras import *
 
-            >>> # *IMPORTANT* Don't forget to start a tournament before
+            >>> # **IMPORTANT** Don't forget to start a tournament before
             >>> # registering the players
             >>> startNewTournament()
 
@@ -132,20 +132,22 @@
             >>> startNewTournament()
 
             # And start over...
+            `
 
      - There is a really simple test suit i used mainly to test the odd number
        of players. It starts a tournament and reports all matches until we have
        a winner. To run it, simply execute the following from a terminal 
        emulator:
 
+            `
             $ python test_extras.py
-
+            `
 
  > Author
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
  - Tito Lins
-   -> Contact: <titolins@outlook.com> or <tito@blinx.com.br>
-   -> Github: https://github.com/titolins
+   * Contact: <titolins@outlook.com> or <tito@blinx.com.br>
+   * Github: https://github.com/titolins
 
 ################################################################################
 ################################################################################
