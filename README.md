@@ -3,17 +3,15 @@
 #                                                                              #
 #                  Udacity FullStack WebDeveloper Nanodegree                   #
 #                                                                              #
-#                                                                              #
 #                            Tournament Project                                #
 #                                                                              #
 ################################################################################
 ################################################################################
-##                                                                            ##
-## This is the readme for the Tournament Project, second project required for ##
-## obtaining the full stack web developer nano degree from udacity:           ##
-##                                                                            ##
-##   http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004 ##
-##                                                                            ##
+###                                                                          ###
+### This is the readme for the Tournament Project, second project required for
+### obtaining the full stack web developer nano degree from udacity:         ###
+### http://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004 ###
+###                                                                          ###
 ################################################################################
 
 
