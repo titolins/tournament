@@ -1,29 +1,29 @@
 -- Table definitions for the tournament project.
---
--- Put your SQL 'create table' statements in this file; also 'create view'
--- statements if you choose to use it.
---
--- You can write comments in this file by starting them with two dashes, like
--- these lines here.
 
-create table tournaments (id serial primary key);
+DROP DATABASE IF EXISTS tournament;
 
-create table players (id serial primary key, name text, tournament_id integer,
-    foreign key (tournament_id) references tournaments(id));
+CREATE DATABASE tournament;
+
+\c tournament
+
+CREATE TABLE tournaments (id serial primary key);
+
+CREATE TABLE players (id serial primary key, name text, tournament_id integer
+    references tournaments(id));
 
 create table matches (id_1 integer, id_2 integer, winner integer);
 
 -- standings view returns the current standings of the players
--- the standings include player id, player name, wins, draws, byes, matches, and
--- omw
+-- the standings include player id, player name, wins, draws, byes, matches, 
+-- and omw
 
-create view standings as
-    select id, name, matches, wins, draws, byes, (wins-byes) as omw from (select
-    players.id, players.name, count(matches.id_1) as matches, sum(case when 
-    matches.winner = players.id then 1 else 0 end) as wins, sum(case when 
-    matches.winner = 0 then 1 else 0 end) as draws, sum(case when players.id = 
-    matches.id_1 and matches.id_2 < 0 then 1 else 0 end) as byes, 
-    players.tournament_id from players left join matches on players.id = 
-    matches.id_1 or players.id = matches.id_2 group by players.id) as standings 
-    where standings.tournament_id = (select max(tournaments.id) from 
-    tournaments) order by wins desc, omw desc, draws desc;
+CREATE VIEW standings AS
+    SELECT id, name, matches, wins, draws, byes, (wins-byes) AS omw FROM 
+    (SELECT players.id, players.name, COUNT(matches.id_1) AS matches, SUM(CASE 
+    WHEN matches.winner = players.id THEN 1 ELSE 0 END) AS wins, SUM(CASE WHEN 
+    matches.winner = 0 THEN 1 ELSE 0 END) AS draws, SUM(CASE WHEN players.id = 
+    matches.id_1 AND matches.id_2 < 0 THEN 1 ELSE 0 END) AS byes, 
+    players.tournament_id FROM players LEFT JOIN matches ON players.id = 
+    matches.id_1 OR players.id = matches.id_2 GROUP BY players.id) AS standings 
+    WHERE standings.tournament_id = (SELECT MAX(tournaments.id) FROM 
+    tournaments) ORDER BY wins DESC, omw DESC, draws DESC;

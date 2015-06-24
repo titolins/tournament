@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 #
 # tournament_extras.py -- implementation of a Swiss-system tournament
-# 
-# This file contains the methods corresponding to the extra credits requirements
+#
+# This file contains the methods corresponding to the extra credits
+# requirements
 #
 
 import psycopg2
@@ -13,8 +14,9 @@ from random import randrange
 # For example, consider the following:
 #
 #   standings = playerStandings()
-# 
-# You may now print all the players info  with the following for loop (using the
+#
+# You may now print all the players info  with the following for loop (using
+# the
 # statics instead of the raw index numbers makes for a clearer code):
 #
 #   for player in standings:
@@ -28,68 +30,80 @@ DRAWS = 4
 BYES = 5
 
 
-def connect():
-    """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+def connect(database_name="tournament"):
+    """Connect to the PostgreSQL database.  Returns a database connection and a
+    cursor.
+    """
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        cursor = db.cursor()
+        return db, cursor
+    except:
+        print("Error! Failed to open db connection")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    sql = "delete from matches"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    conn.commit()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "TRUNCATE matches"
+    cursor.execute(sql)
+
+    db.commit()
+    db.close()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    sql = "delete from players"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    conn.commit()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "TRUNCATE players"
+    cursor.execute(sql)
+
+    db.commit()
+    db.close()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
-    sql = "select count(*) from players where tournament_id = (%s)"
+    db, cursor = connect()
     tournamentId = getCurrentTournament()
 
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql, (tournamentId,))
-    row = c.fetchall()
-    conn.close()
-    return row[0][0]
-     
+    sql = "SELECT COUNT(*) FROM players WHERE tournament_id = (%s)"
+    parameter = (tournamentId,)
+    cursor.execute(sql, parameter)
+    rows = cursor.fetchall()
+
+    db.close()
+
+    return rows[0][0]
+
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
-  
+
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
-  
+
     Args:
       name: the player's full name (need not be unique).
     """
-    sql = "insert into players (name, tournament_id) values (%s, %s)"
+    db, cursor = connect()
     tournamentId = getCurrentTournament()
 
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql, (name, tournamentId,)) 
-    conn.commit()
-    conn.close()
+    sql = "INSERT INTO players (name, tournament_id) VALUES (%s, %s)"
+    parameter = (name, tournamentId,)
+    cursor.execute(sql, parameter)
+
+    db.commit()
+    db.close()
 
 
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
 
-    The first entry in the list should be the player in first place, or a player
-    tied for first place if there is currently a tie.
+    The first entry in the list should be the player in first place, or a
+    player tied for first place if there is currently a tie.
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
@@ -98,36 +112,41 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    sql = "select * from standings"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    rows = c.fetchall()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "SELECT * FROM standings"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    db.close()
+
     return rows
 
 
 def getCurrentTournament():
     """Returns the id of the current played tournament
     """
-    sql = "select max(id) from tournaments"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    rows = c.fetchall()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "SELECT MAX(id) FROM tournaments"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    db.close()
+
     return rows[0][0]
 
 
 def startNewTournament():
     """Creates a new tournament in the db
     """
-    sql = "insert into tournaments default values"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    conn.commit()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "INSERT INTO tournaments DEFAULT VALUES"
+    cursor.execute(sql)
+
+    db.commit()
+    db.close()
 
 
 def getMatches():
@@ -135,12 +154,13 @@ def getMatches():
     reported.
 
     """
-    sql = "select * from matches"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    rows = c.fetchall()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "SELECT * FROM matches"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    db.close()
 
     return rows
 
@@ -148,12 +168,13 @@ def getMatches():
 def getMaxByeCount():
     """Returns the greater number of byes any player has been awarded with
     """
-    sql = "select max(byes) from standings"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    rows = c.fetchall()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "SELECT MAX(byes) FROM standings"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    db.close()
 
     return rows[0][0]
 
@@ -161,27 +182,31 @@ def getMaxByeCount():
 def getNumOfPlayersWithMaxByes():
     """Returns the number of players awarded with the greater number of bys
     """
+    db, cursor = connect()
+
     sql = """
-    select count(id) from standings where byes = (select max(byes) from 
+    SELECT COUNT(id) FROM standings WHERE byes = (SELECT MAX(byes) FROM
     standings)
     """
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    rows = c.fetchall()
-    conn.close
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    db.close()
 
     return rows[0][0]
+
 
 def getMinScore():
     """Returns the minimum score from a player in the standings
     """
-    sql = "select min(wins) from standings"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql)
-    rows = c.fetchall()
-    conn.close
+    db, cursor = connect()
+
+    sql = "SELECT MIN(wins) FROM standings"
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+
+    db.close()
+
     return rows[0][0]
 
 
@@ -189,7 +214,7 @@ def selectRoundPlayers():
     """Returns a list of tuples containing the current standings of players.
 
     If there is a odd number of players, one of them will be chosen to get a
-    bye round, which counts as a win. The standings will then be modified, 
+    bye round, which counts as a win. The standings will then be modified,
     removing the chosen player from it and returning the rest.
 
     A player may only be awarded with a bye if all other players have a equal
@@ -200,44 +225,44 @@ def selectRoundPlayers():
     # get the current standings
     standings = playerStandings()
 
-    # if there is a even number of players, there is no need for awarding anyone
-    # a bye, so we simply return the current standings
+    # if there is a even number of players, there is no need for awarding
+    # anyone a bye, so we simply return the current standings
     if (numOfPlayers % 2 == 0):
         return standings
 
     # else, we need to choose a player to be awarded with a bye turn
     else:
 
-        # first we get the greater number of byes any player has been awarded 
+        # first we get the greater number of byes any player has been awarded
         # with as of now
         byeThreshold = getMaxByeCount()
 
-        # then we get the number of players which received the greater number of 
-        # byes
+        # then we get the number of players which received the greater number
+        # of  byes
         numOfPlayersWithMaxByes = getNumOfPlayersWithMaxByes()
 
-        # then we create a list which will receive the ids of the players that 
+        # then we create a list which will receive the ids of the players that
         # may be awarded a bye turn
         eligibleIds = []
 
         # if all players have received the max number of byes, then anyone is
         # suitable for receiving a bye
         if numOfPlayersWithMaxByes == numOfPlayers:
-            # anyone can receive a bye, so we add all ids to the list 
+            # anyone can receive a bye, so we add all ids to the list
             for player in standings:
                 eligibleIds.append(player[ID])
 
         # otherwise, we have to check which players are eligible to receive a
-        # bye turn (which are those closer to the minScore that have 
+        # bye turn (which are those closer to the minScore that have
         # byes < byeThreshold)
         else:
             players = []
             minScore = getMinScore()
             for player in standings:
                 if player[BYES] < byeThreshold:
-                   # this player may be eligible for receiving a bye this round
-                   players.append(player)
-                   #eligibleIds.append(player[ID])
+                    # this player may be eligible for receiving a bye this
+                    # round
+                    players.append(player)
 
             # then we select the players with lesser wins from those selected
             # above
@@ -246,7 +271,6 @@ def selectRoundPlayers():
                     if player[WINS] == minScore:
                         eligibleIds.append(player[ID])
                 minScore += 1
-
 
         # choose the player who will get a bye turn
         # if there is only one eligible id, then that is the one
@@ -258,31 +282,30 @@ def selectRoundPlayers():
             selectedId = eligibleIds[randrange(len(eligibleIds))]
 
         # we have to iterate through the standings once again to remove
-        # the chosen player from the standings to be returned. 
+        # the chosen player from the standings to be returned.
         for i in xrange(0, len(standings)):
             if (standings[i][ID] == selectedId):
                 standings.remove(standings[i])
-                # then we append only the selected id to the end of the standings
-                # at the swisspairings method we will retrieve this to report
-                # the bye match
+                # then we append only the selected id to the end of the
+                # standings at the swisspairings method we will retrieve this
+                # to report the bye match
                 standings.append(selectedId)
                 break
-            
 
         return standings
 
 
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
-  
+
     Assuming that there are an even number of players registered, each player
     appears exactly once in the pairings.  Each player is paired with another
     player with an equal or nearly-equal win record, that is, a player adjacent
     to him or her in the standings.
 
     This method complies with the extra credits requirements, meaning that it
-    does not repeat matches and also takes into account a odd number of players. 
-      
+    does not repeat matches and also takes into account a odd number of players
+
     Returns:
       A list of tuples, each of which contains (id1, name1, id2, name2)
         id1: the first player's unique id
@@ -302,7 +325,7 @@ def swissPairings():
     if isTournamentOver():
         return []
 
-    # if there are more matches to be played, we check if we have a even or odd 
+    # if there are more matches to be played, we check if we have a even or odd
     # number of players
     numOfPlayer = countPlayers()
     if countPlayers() % 2 == 0:
@@ -321,8 +344,7 @@ def swissPairings():
 
     while not validPairings:
         pairings = []
-        for i in xrange(0, len(standings)):
-            firstPlayer = standings[i]
+        for firstPlayer in standings:
 
             # we start by assuming that we have a valid first player
             validFirstPlayer = True
@@ -334,7 +356,7 @@ def swissPairings():
                     # set the valid to false and break the pairings loop
                     validFirstPlayer = False
                     break
-            
+
             # if we do not have a valid first player we have to continue and
             # chose another one
             if not validFirstPlayer:
@@ -348,12 +370,13 @@ def swissPairings():
                 if firstPlayer[ID] == secondPlayer[ID]:
                     continue
 
-                # same things as for the first player (check if it has already been
-                # paired)
+                # same thing as for the first player (check if it has already
+                # been paired)
                 validSecondPlayer = True
                 for firstId, firstName, secondId, secondName in pairings:
-                    if (secondPlayer[ID] == firstId or 
-                        secondPlayer[ID] == secondId):
+                    if (
+                            secondPlayer[ID] == firstId or
+                            secondPlayer[ID] == secondId):
 
                         validSecondPlayer = False
 
@@ -363,20 +386,23 @@ def swissPairings():
                 else:
                     break
 
-            # now we should have two players who have not been paired yet for this
-            # round, but we still need to check if they already have played against
-            # each other
+            # now we should have two players who have not been paired yet for
+            # this round, but we still need to check if they already have
+            # played against each other
 
             validPair = True
             for firstId, secondId, winner in matches:
-                if ((firstPlayer[ID] == firstId and secondPlayer[ID] == secondId) or
-                    (firstPlayer[ID] == secondId and secondPlayer[ID] == firstId)):
+                if ((firstPlayer[ID] == firstId and
+                        secondPlayer[ID] == secondId) or
+                    (firstPlayer[ID] == secondId and
+                        secondPlayer[ID] == firstId)):
+
                     validPair = False
 
-            # if the selected players have not played against each other, we create
-            # the pair tuple and append to the list of pairings
+            # if the selected players have not played against each other, we
+            # create the pair tuple and append to the list of pairings
             if validPair:
-                pair = (firstPlayer[ID], firstPlayer[NAME], secondPlayer[ID], 
+                pair = (firstPlayer[ID], firstPlayer[NAME], secondPlayer[ID],
                         secondPlayer[NAME])
                 pairings.append(pair)
 
@@ -384,8 +410,8 @@ def swissPairings():
             else:
                 continue
 
-        # we lastly check if we have the correct number of pairings. If we dont,
-        # it means that the regular pairing (one player against the other
+        # we lastly check if we have the correct number of pairings. If we
+        # dont, it means that the regular pairing (one player against the other
         # immediatelly after him in the standings) does not work. If that's the
         # case, we clear the pairings list and start over, but now we increment
         # the offset for chosing the second player
@@ -398,16 +424,17 @@ def swissPairings():
             validPairings = True
             break
 
-    # lastly, we have to report the bye match if we have a odd number of players
+    # lastly, we have to report the bye match if we have a odd number of
+    # players
     if hasOddPlayers:
         reportMatch(selectedByeId, -1, selectedByeId)
 
     return pairings
-                         
+
 
 def reportMatch(id_1, id_2, result):
     """Records the outcome of a single match between two players. This is the
-    extra credits version, meaning that it supports draws. 
+    extra credits version, meaning that it supports draws.
 
     Args:
       id_1:  the id number of the first player
@@ -415,12 +442,14 @@ def reportMatch(id_1, id_2, result):
       result: the id of the winner or -1 if it is a bye round or 0 if it is a
               draw
     """
-    sql = "insert into matches (id_1, id_2, winner) values (%s, %s, %s)"
-    conn = connect()
-    c = conn.cursor()
-    c.execute(sql, (id_1, id_2, result,))
-    conn.commit()
-    conn.close()
+    db, cursor = connect()
+
+    sql = "INSERT INTO matches (id_1, id_2, winner) VALUES (%s, %s, %s)"
+    parameter = (id_1, id_2, result,)
+    cursor.execute(sql, parameter)
+
+    db.commit()
+    db.close()
 
 
 def isTournamentOver():
